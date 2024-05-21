@@ -1,6 +1,4 @@
-# 🦜🔗 Langchain - Quickstart App
-
-Build your first LLM powered app with Langchain and Streamlit.
+LLM powered math solver for the AIMO Kaggle Competition with Langchain.
 
 ## Overview of the App
 
