@@ -1,3 +1,9 @@
+
+This branch is for possible use if we choose to translate the LaTeX to natural language before we feed the questions/answers to the language models
+
+If you run the jupyter notebook data_preprocessing it will generate a pandas DataFrame with the questions translated from LaTeX to natural language as well as a .csv file with this and an excel file
+
+
 LLM powered math solver for the AIMO Kaggle Competition with Langchain.
 
 ## Overview of the App
