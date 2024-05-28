@@ -10,64 +10,48 @@ import pandas as pd
 
 tokenizer = AutoTokenizer.from_pretrained("lschlessinger/bert-finetuned-math-prob-classification")
 model = AutoModelForSequenceClassification.from_pretrained("lschlessinger/bert-finetuned-math-prob-classification")
+# Move model to GPU if available
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model.to(device)
 
+test_df = pd.read_csv('AIMO/train.csv')
+# test_df = pd.read_csv('ALLtraincompiled.csv').iloc[:100,:]
 
-#import Data to predict on, change file as needed
-test_df = pd.read_csv('ALLtestcompiled.csv')
-# Convert 'Type' column to categorical if not already
-test_df['Type'] = test_df['Type'].astype('category')
-
-# Map the labels to integers
-test_df['label'] = test_df['Type'].cat.codes
-
-test_df = test_df[['label','Question']]
 # Convert to Hugging Face dataset
 test_dataset = Dataset.from_pandas(test_df)
 
-# Function to tokenize data with truncation
-def tokenize_data(examples):
-    return tokenizer(examples['Question'], padding='max_length', truncation=True, max_length=512)
 
-# Tokenize the datasets
-tokenized_test_dataset = test_dataset.map(tokenize_data, batched=True, num_proc=4)
-tokenized_test_dataset.set_format(type='torch', columns=['input_ids', 'attention_mask', 'label'])
+label_mapping = {
+    0: "Algebra",
+    1: "Counting & Probability",
+    2: "Geometry",
+    3: "Intermediate Algebra",
+    4: "Number Theory",
+    5: "Prealgebra",
+    6: "Precalculus"
+}
 
-# classifier = pipeline("text-classification", model="lschlessinger/bert-finetuned-math-prob-classification")
-# classifier(tokenized_datasets['test']['New_Question'])
+def predict(text):
+    # Tokenize the input text
+    inputs = tokenizer(text, return_tensors="pt", truncation=True, padding=True, max_length=512)
+    
+    # Move inputs to GPU if available
+    inputs = {key: val.to(device) for key, val in inputs.items()}
+    
+    # Make prediction
+    with torch.no_grad():
+        outputs = model(**inputs)
+    
+    # Get the predicted class
+    predictions = torch.nn.functional.softmax(outputs.logits, dim=-1)
+    predicted_class = torch.argmax(predictions, dim=-1).item()
 
-# Prepare DataLoader
-test_dataloader = DataLoader(tokenized_test_dataset, batch_size=16)
+    predicted_label = label_mapping[predicted_class]
+    
+    return predicted_label
 
-# Function to evaluate the model with a progress bar
-def evaluate_model(model, dataloader):
-    device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
-    model.to(device)
-    model.eval()
-    predictions, true_labels = [], []
+# Apply the prediction function to the dataset
+test_dataset = test_dataset.map(lambda x: {'Type prediction': predict(x['problem'])})
+df = pd.DataFrame(test_dataset) 
 
-    for batch in tqdm(dataloader, desc="Evaluating"):
-        input_ids = batch['input_ids'].to(device)
-        attention_mask = batch['attention_mask'].to(device)
-        labels = batch['label'].to(device)
-
-        with torch.no_grad():
-            outputs = model(input_ids, attention_mask=attention_mask)
-            logits = outputs.logits
-            preds = torch.argmax(logits, dim=-1)
-
-        predictions.extend(preds.cpu().numpy())
-        true_labels.extend(labels.cpu().numpy())
-
-    return predictions, true_labels
-
-# Run evaluation
-preds, labels = evaluate_model(model, test_dataloader)
-
-# # Calculate evaluation metrics
-# accuracy = accuracy_score(labels, preds)
-# precision, recall, f1, _ = precision_recall_fscore_support(labels, preds, average='weighted')
-
-# print(f"Accuracy: {accuracy}")
-# print(f"Precision: {precision}")
-# print(f"Recall: {recall}")
-# print(f"F1 Score: {f1}")
+df

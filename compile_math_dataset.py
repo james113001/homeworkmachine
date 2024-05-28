@@ -61,12 +61,12 @@ def compile_dataset(directory, output_csv):
 def main():
     # Compile train dataset
     train_directory = 'MATH/train'  # Update this path if necessary
-    train_output_csv = 'traincompiled.csv'
+    train_output_csv = 'integertraincompiled.csv'
     compile_dataset(train_directory, train_output_csv)
 
     # Compile test dataset
     test_directory = 'MATH/test'  # Update this path if necessary
-    test_output_csv = 'testcompiled.csv'
+    test_output_csv = 'integertestcompiled.csv'
     compile_dataset(test_directory, test_output_csv)
 
 if __name__ == "__main__":
