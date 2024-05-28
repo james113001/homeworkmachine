@@ -1,4 +1,4 @@
-LLM powered math solver for the AIMO Kaggle Competition with Langchain.
+LLM powered math solver for the AIMO Kaggle Competition with DeepSeekMath and BERT.
 
 ## Overview of the App
 
