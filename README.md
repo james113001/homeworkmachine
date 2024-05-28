@@ -2,9 +2,9 @@ LLM powered math solver for the AIMO Kaggle Competition with Langchain.
 
 ## Overview of the App
 
-<img src="diagram.jpg" width="75%">
+<img src="IMG_1066.png" width="75%">
 
-- Accepts input text (*e.g.* `What are the three key pieces of advice for learning how to code?`) as prompt input using Streamlit's `st.text_area()`, then assign this to the `text` variable.
-- LLM model is called via `llm()` and it is applied on the prompt input `text` to generate a response via `llm(text)`
+- Accepts input text question with LaTex (*e.g.* `We roll a fair 6-sided die 5 times.  What is the probability that we get a 6 in at most 2 of the rolls?`) as prompt input, then classify problem type using a BERT-based LLM, then pass the question, type, and a random example from prm800k dataset (a series of steps for a random question of that question type) as a one shot inference to DeepSeekMath.
+- DeepSeekMath outputs response as integer value, and a series of steps
 
 
