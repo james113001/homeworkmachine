@@ -55,3 +55,6 @@ test_dataset = test_dataset.map(lambda x: {'Type prediction': predict(x['problem
 df = pd.DataFrame(test_dataset) 
 
 df
+
+class Type_Preditor:
+    predict
