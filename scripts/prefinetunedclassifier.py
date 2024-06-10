@@ -14,7 +14,7 @@ model = AutoModelForSequenceClassification.from_pretrained("lschlessinger/bert-f
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
 
-test_df = pd.read_csv('AIMO/train.csv')
+test_df = pd.read_csv('../resources/AIMO/train.csv')
 # test_df = pd.read_csv('ALLtraincompiled.csv').iloc[:100,:]
 
 # Convert to Hugging Face dataset
