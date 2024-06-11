@@ -1,51 +1,56 @@
+class Bert {
+    predictProblemType(:string):{
 
-class FileLoader {
-    INPUT_LOCATION = ""
-
-    loadFile():string{
-        return "First Question"
     }
 }
+class DeepSeek{
+    makeAttempt(){
 
-
+    }
+}
 class Autogen {
+
+    const bert = new Bert()
+    const ds = new DeepSeek()
+    // Make a prediction for problem type
+    // make an attempt at solving the problem
     init(){
+
         const BERT_CONFIGURATION = {}
         const DEEPSEEK_CONFIGURATION = {}
 
         // Runs some steps and is ready to use by end of it
     }
 
-    makeAttempt(question:string){
-            console.log("The answer to " + question + " is...")
-            return 0
-    }
-}
-
-class ProblemSolver {
-    predict(model:Autogen,question): number {
-        return -1
-    }
+    predict(question:string): number {
+        console.log("The answer to " + question + " is...")
+        return 0    }
 
     predictSome(arrOfQuestions: []) {
 
     }
-
+}
+class ProblemSolver {
     savePrediction(prediction:number) {
 
     }
 
-    loadQuestionFromFile() {
 
+    loadQuestionFromFile():string {
+        return "What is 1+1"
     }
 
 
 }
 
 const ag = new Autogen()
+const bert = new Bert()
 const solver = new ProblemSolver()
 const question = solver.loadQuestionFromFile()
-const prediction = solver.predict(ag,question)
-console.log(prediction)
-solver.savePrediction(prediction)
+const problemType = bert.predictProblemType(question)
+// const attemptAtSolving = ds.makeAttempt(problemType,question)
+// const prediction = ag.predict(question)
+const answer = ag.predict(question);
+console.log(answer)
+solver.savePrediction(answer)
 
